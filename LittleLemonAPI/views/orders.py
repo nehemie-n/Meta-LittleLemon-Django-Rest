@@ -25,7 +25,8 @@ class OrdersView(generics.ListCreateAPIView):
         "orderitem_set").filter(user=4).all()
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
-
+    ordering_fields = ["date", "total"]
+    
     def get(self, request, *args, **kwargs):
         if is_manager(request):
             queryset = self.get_queryset
