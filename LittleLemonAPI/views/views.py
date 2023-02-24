@@ -60,13 +60,13 @@ class DeleteSingleManagersDeliveryCrew(generics.DestroyAPIView):
         return Response({'success': True}, status.HTTP_200_OK)
 
 
-# Menu items
-
 class MenuItemsView(generics.ListCreateAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
     permission_classes = [IsAuthenticated]
-
+    search_fields = ["title", "category__title"]
+    ordering_fields = ["price", "category"]
+    
     def post(self, request, *args, **kwargs):
         if (is_manager(request) or is_admin(request)):
             serializer = self.serializer_class(data=request.data)
