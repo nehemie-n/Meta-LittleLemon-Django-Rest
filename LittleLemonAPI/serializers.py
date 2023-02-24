@@ -42,8 +42,8 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         # read_only_fields = ["id", "user", "price"]
-        fields = ['id', 'user', 'menuitem',
-                  'quantity', 'unit_price', 'price']
+        fields = ['id', 'user',
+                  'quantity', 'unit_price', 'price', 'menuitem']
         validators = [
             UniqueTogetherValidator(
                 queryset=Cart.objects.all(),    fields=['menuitem', 'user'])
