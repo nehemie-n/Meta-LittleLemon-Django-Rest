@@ -23,15 +23,12 @@ class CartItemsView(generics.ListCreateAPIView, generics.DestroyAPIView):
 
     def post(self, request, *args, **kwargs):
         item = get_object_or_404(MenuItem, id=request.data["menuitem"])
-
         cart = request.data
         cart["user"] = request.user.id
         cart["unit_price"] = item.price
         cart["price"] = (cart.get("quantity") or 0) * item.price
 
-        serializer = self.serializer_class(data = cart)
-        
-        print("DDATA ", cart)
+        serializer = self.serializer_class(data=cart)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

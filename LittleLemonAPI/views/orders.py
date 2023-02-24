@@ -6,7 +6,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAcceptable
-from django.contrib.auth.models import  User 
+from django.contrib.auth.models import User
 from ..auth import (IsCustomer, is_customer, is_delivery_crew,
                     is_manager)
 from ..models import Cart, Order, OrderItem
@@ -98,7 +98,6 @@ class SingleOrdersView(generics.RetrieveUpdateDestroyAPIView):
 
     def update_order(self, order, request, id):
         """Updates the order. A manager can use this endpoint to set a delivery crew to this order, and also update the order status to 0 or 1."""
-        # Update the order with the request data
         serializer = self.serializer_class(order, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -116,18 +115,17 @@ class SingleOrdersView(generics.RetrieveUpdateDestroyAPIView):
             return self.update_order(order, request, id=id)
 
         elif is_manager(request):
-            print("DMNN :: manager ", request.data)
             order = get_object_or_404(Order, id=id)
             print(order)
             if request.data.get("status"):
                 order.status = request.data.get("status")
             if request.data.get("delivery_crew"):
-                user = get_object_or_404(User, pk=request.data.get("delivery_crew"))
+                user = get_object_or_404(
+                    User, pk=request.data.get("delivery_crew"))
                 order.delivery_crew = user
             return self.update_order(order, request, id=id)
 
         else:
-            print("DDD: ", request.user)
             return Response({"message": "Unauthorized"}, status.HTTP_401_UNAUTHORIZED)
 
     def put(self, request, pk):
@@ -136,10 +134,6 @@ class SingleOrdersView(generics.RetrieveUpdateDestroyAPIView):
     def patch(self, request, pk):
         return self.handle_put_patch(request=request, id=pk)
 
-    #
-    #
-    # Get Method
-    #
     def get(self, request, *args, **kwargs):
         """
         For fetching the order item
